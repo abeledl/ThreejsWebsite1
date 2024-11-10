@@ -43,7 +43,7 @@
         camera.position.z =15;
         camera.position.y = 10;
         camera.position.x = -15;
-        camera.lookAt(0, 50, 0);
+        //camera.lookAt(0, 50, 0);
 
         const renderer = new THREE.WebGLRenderer({alpha: true, antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -173,7 +173,7 @@
         }, undefined, function (error) {
             console.error(error);
         });
-
+        /*
         loader.load("blurplane.glb", function (gltf) {
             // Enable shadow casting and receiving for the GLTF model
             gltf.scene.traverse(function(node) {
@@ -187,7 +187,7 @@
         }, undefined, function (error) {
             console.error(error);
         });
-
+        */
 
 
         renderer.physicallyCorrectLights = true;
@@ -274,9 +274,28 @@
             composer.setSize(window.innerWidth, window.innerHeight);
         });
         
-                // Animation loop
+
+        // Initialize clock for time-based animations
+        const clock = new THREE.Clock();
+        let elapsedTime = 0;
+
+
+
+        // Animation loop
         function animate() {
             requestAnimationFrame(animate);
+
+            // Increment elapsed time
+            elapsedTime += clock.getDelta();
+
+            // Rotate camera horizontally with easing
+            const angle = Math.sin(elapsedTime * 0.5) * 0.2; // Eased rotation angle
+            camera.position.x = -20 * Math.cos(angle); // Adjust X position
+            camera.position.z = 15 * Math.sin(angle); // Adjust Z position
+            
+            camera.lookAt(0, 4, 0);
+
+
             controls.update();
             renderer.render(scene, camera); 
             //composer.render();
