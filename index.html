@@ -207,10 +207,10 @@
 
 
         // Add lights
-        let ambientLight = new THREE.AmbientLight(0xffffff, 1);
+        let ambientLight = new THREE.AmbientLight(0xffffff, 0);
         scene.add(ambientLight);
         
-        let sun = new THREE.DirectionalLight(0xffffff, 3);
+        let sun = new THREE.DirectionalLight(0xffffff,10);
         sun.position.set(20, 20, 10);  // Move sun light to a different position
         sun.target.position.set(0, 0, -10);
         sun.castShadow = true;  // Enable shadows for directional light
