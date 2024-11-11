@@ -152,8 +152,8 @@
             // Enable shadow casting and receiving for the GLTF model
             gltf.scene.traverse(function(node) {
                 if (node.isMesh) {
-                    //node.castShadow = true;    // Objects will cast shadows
-                    //node.receiveShadow = true; // Objects will receive shadows
+                    node.castShadow = true;    // Objects will cast shadows
+                    node.receiveShadow = true; // Objects will receive shadows
                 }
             });
             scene.add(gltf.scene);
@@ -207,13 +207,13 @@
 
 
         // Add lights
-        let ambientLight = new THREE.AmbientLight(0xffffff, 0);
+        let ambientLight = new THREE.AmbientLight(0xffffff, 1);
         scene.add(ambientLight);
         
-        let sun = new THREE.DirectionalLight(0xffffff, 1.5);
+        let sun = new THREE.DirectionalLight(0xffffff, 3);
         sun.position.set(20, 20, 10);  // Move sun light to a different position
         sun.target.position.set(0, 0, -10);
-        //sun.castShadow = true;  // Enable shadows for directional light
+        sun.castShadow = true;  // Enable shadows for directional light
         
         // Set up shadow properties for the sun
         sun.shadow.mapSize.width = 1024;  // Increase shadow map size for better quality
@@ -289,11 +289,11 @@
             elapsedTime += clock.getDelta();
 
             // Rotate camera horizontally with easing
-            const angle = Math.sin(elapsedTime * 0.5) * 0.2; // Eased rotation angle
-            camera.position.x = -20 * Math.cos(angle); // Adjust X position
-            camera.position.z = 15 * Math.sin(angle); // Adjust Z position
+            //const angle = Math.sin(elapsedTime * 0.5) * 0.2; // Eased rotation angle
+            //camera.position.x = -20 * Math.cos(angle); // Adjust X position
+            //camera.position.z = 15 * Math.sin(angle); // Adjust Z position
             
-            camera.lookAt(0, 4, 0);
+            //camera.lookAt(0, 4, 0);
 
 
             controls.update();
