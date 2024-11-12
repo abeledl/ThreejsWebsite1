@@ -40,16 +40,16 @@
         // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z =15;
-        camera.position.y = 10;
-        camera.position.x = -15;
+        camera.position.z =20;
+        camera.position.y = 15;
+        camera.position.x = -20;
         //camera.lookAt(0, 50, 0);
 
-        const renderer = new THREE.WebGLRenderer({alpha: true});
+        const renderer = new THREE.WebGLRenderer({alpha: true}, {antialias: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         //renderer.shadowMap.type = THREE.PCFSoftShadowMap;  // Enable soft shadows
-        //renderer.toneMapping = THREE.ACESFilmicToneMapping;  // Tone mapping
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;  // Tone mapping
         renderer.toneMappingExposure = 0.9;
         renderer.outputEncoding = THREE.sRGBEncoding;  // Set color encoding
         document.body.appendChild(renderer.domElement);
@@ -152,8 +152,8 @@
             // Enable shadow casting and receiving for the GLTF model
             gltf.scene.traverse(function(node) {
                 if (node.isMesh) {
-                    node.castShadow = true;    // Objects will cast shadows
-                    node.receiveShadow = true; // Objects will receive shadows
+                    //node.castShadow = true;    // Objects will cast shadows
+                    //node.receiveShadow = true; // Objects will receive shadows
                 }
             });
             scene.add(gltf.scene);
@@ -173,7 +173,7 @@
         }, undefined, function (error) {
             console.error(error);
         });
-        /*
+        
         loader.load("blurplane.glb", function (gltf) {
             // Enable shadow casting and receiving for the GLTF model
             gltf.scene.traverse(function(node) {
@@ -187,7 +187,7 @@
         }, undefined, function (error) {
             console.error(error);
         });
-        */
+        
 
 
         renderer.physicallyCorrectLights = true;
