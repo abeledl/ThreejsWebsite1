@@ -15,17 +15,20 @@
 <body>
     <script type="importmap">
         {
-          "imports": {
-            "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
-            "three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js",
-            "three/addons/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js",
-            "three/addons/loaders/RGBELoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js",
-            "three/addons/postprocessing/EffectComposer.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/EffectComposer.js",
-            "three/addons/postprocessing/RenderPass.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/RenderPass.js",
-            "three/addons/postprocessing/SSRPass.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/SSRPass.js"
-        }
+            "imports": {
+                "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+                "three/addons/controls/OrbitControls.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/controls/OrbitControls.js",
+                "three/addons/loaders/GLTFLoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/GLTFLoader.js",
+                "three/addons/loaders/RGBELoader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/loaders/RGBELoader.js",
+                "three/addons/postprocessing/EffectComposer.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/EffectComposer.js",
+                "three/addons/postprocessing/RenderPass.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/RenderPass.js",
+                "three/addons/postprocessing/SSRPass.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/SSRPass.js",
+                "three/examples/jsm/postprocessing/ShaderPass.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/postprocessing/ShaderPass.js",
+                "three/examples/jsm/shaders/FXAAShader.js": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/shaders/FXAAShader.js"
+            }
         }
     </script>
+    
 
     <script type="module">
         import * as THREE from 'three';
@@ -37,6 +40,14 @@
         import { SSRPass } from 'three/addons/postprocessing/SSRPass.js';
         import { ShaderMaterial } from 'three';
 
+        import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+        import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+
+
+
+
+
+
         // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -45,7 +56,7 @@
         camera.position.x = -20;
         //camera.lookAt(0, 50, 0);
 
-        const renderer = new THREE.WebGLRenderer({alpha: true}, {antialias: true});
+        const renderer = new THREE.WebGLRenderer({antialias:true},{alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
         //renderer.shadowMap.type = THREE.PCFSoftShadowMap;  // Enable soft shadows
@@ -264,7 +275,12 @@
         ssrPass.maxDistance = 2;
         ssrPass.resolution = 0.01; // Adjust this value to balance performance and quality
 
-        composer.addPass(ssrPass);
+        //composer.addPass(ssrPass);
+
+        const fxaaPass = new ShaderPass(FXAAShader);
+        fxaaPass.material.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+        composer.addPass(fxaaPass);
+
 
         // Handle window resize
         window.addEventListener('resize', () => {
