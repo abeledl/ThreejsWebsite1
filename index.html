@@ -54,7 +54,7 @@
         camera.position.z =20;
         camera.position.y = 15;
         camera.position.x = -20;
-        //camera.lookAt(0, 50, 0);
+        //camera.lookAt(0, 10, 0);
 
         const renderer = new THREE.WebGLRenderer({antialias:true},{alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -116,7 +116,7 @@
         //rotate the glass plane
         glassPlane.rotation.y = -Math.PI / 2;
 
-        scene.add(glassPlane);
+        //scene.add(glassPlane);
 
         // Text canvas texture for "Hello World"
         const textCanvas = document.createElement('canvas');
@@ -141,7 +141,7 @@
         textPlane.position.set(0, 4, 4);
         //rotation
         textPlane.rotation.y = -Math.PI / 2;
-        scene.add(textPlane);
+        //scene.add(textPlane);
 
 
 
@@ -168,6 +168,26 @@
                 }
             });
             scene.add(gltf.scene);
+            gltf.scene.add(textPlane);
+            gltf.scene.add(glassPlane);
+            // Set up rotation variables
+            let rotationSpeed = 0.005;
+            let time = 0;
+
+            // Animate rotation back and forth on the y-axis
+            function animate() {
+                requestAnimationFrame(animate);
+
+                time += rotationSpeed;
+                // Update rotation on y-axis using Math.sin for smooth back-and-forth motion
+                gltf.scene.rotation.y = Math.sin(time) * 0.5; // Adjust 0.5 for range of rotation
+
+                renderer.render(scene, camera);
+            }
+
+            // Start animation loop
+            animate();
+
         }, undefined, function (error) {
             console.error(error);
         });
@@ -185,19 +205,7 @@
             console.error(error);
         });
         
-        loader.load("blurplane.glb", function (gltf) {
-            // Enable shadow casting and receiving for the GLTF model
-            gltf.scene.traverse(function(node) {
-                if (node.material) {
-      // Remove environment map
 
-      // No reflectivity
-            }
-            });
-            scene.add(gltf.scene);
-        }, undefined, function (error) {
-            console.error(error);
-        });
         
 
 
@@ -251,7 +259,7 @@
 
         // Orbit controls
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, 4, 0);
+        controls.target.set(0, 4.5, 0);
 
 
         
@@ -291,34 +299,32 @@
         });
         
 
-        // Initialize clock for time-based animations
-        const clock = new THREE.Clock();
-        let elapsedTime = 0;
+        // Step 2: Restrict camera movement
+        //controls.minPolarAngle = Math.PI / 2; // Limit vertical movement to the horizontal plane
+        const maxAngleInDegrees = 70;
+        const maxAngleInRadians = maxAngleInDegrees * (Math.PI / 180);
+        controls.maxPolarAngle = maxAngleInRadians;
+        // Step 3: Enable damping for smooth movement
+        controls.enableDamping = true; // Enable smooth transition damping
+        controls.dampingFactor = 0.1;  // Adjust this value for more or less damping
 
+        // Optional: Adjust other settings for additional control
+        controls.enableZoom = true;  // Enable or disable zoom if needed
+        controls.screenSpacePanning = false; // Prevent panning vertically
 
-
-        // Animation loop
+        // Animation loop: Call controls.update() within the render loop
         function animate() {
             requestAnimationFrame(animate);
 
-            // Increment elapsed time
-            elapsedTime += clock.getDelta();
 
-            // Rotate camera horizontally with easing
-            //const angle = Math.sin(elapsedTime * 0.5) * 0.2; // Eased rotation angle
-            //camera.position.x = -20 * Math.cos(angle); // Adjust X position
-            //camera.position.z = 15 * Math.sin(angle); // Adjust Z position
             
-            //camera.lookAt(0, 4, 0);
-
-
-            controls.update();
-            renderer.render(scene, camera); 
-            //composer.render();
+            controls.update(); // Update controls for damping effect
+            renderer.render(scene, camera);
         }
-        
+
         animate();
-        
+
+                
         
     </script>
 </body>
