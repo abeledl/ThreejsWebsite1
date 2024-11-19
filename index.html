@@ -33,8 +33,8 @@
             background-color: #0056b3;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
-    <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>
+    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
+    <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>-->
 </head>
 <body>
     <div class="button-container">
@@ -388,7 +388,7 @@
             animateCamera(level2Position, level2LookAt);
         });
 
-
+        /*
         // Load stats.js directly
         const stats = new Stats()
         stats.showPanel(1) // 0: fps, 1: ms, 2: mb, 3+: custom
@@ -401,10 +401,11 @@
         stats.dom.style.top = '100px'; // Move it 10px from the top edge
         stats.dom.style.position = 'absolute';
         stats.dom.style.zIndex = 9999; // Ensure it stays above other elements
+        */
         // Animation loop: Adjust lerping logic for camera position and controls target
         function animate() {
             requestAnimationFrame(animate);
-            stats.begin();
+            //stats.begin();
             if (isAnimating) {
                 animationProgress += 1 / animationDuration;
                 const t = Math.min(animationProgress, 1); // Clamp t to 1
@@ -422,7 +423,7 @@
             controls.update(); // Update controls for damping effect
             renderer.render(scene, camera);
 
-            stats.end();
+            //stats.end();
 
         }
 
