@@ -11,13 +11,51 @@
             background: linear-gradient(0deg, #face8d 50%, aquamarine 100%);
         }
 
-        /* Style for the button overlay */
+        .window-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none; 
+            /*border: 5px solid white; /* Border thickness and color */
+        }
+        /* Container for border */
+        .border-container {
+            position: absolute;
+            width: 90%; /* Adjust size as needed */
+            height: 90%;
+            background: rgba(255, 255, 255, 0);
+            border: 5px solid white; /* Border thickness and color */
+            box-sizing: border-box;
+            border-radius: 10px; /* Optional: rounded corners */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            z-index: 5;
+        }
+
+        /* Buttons overlay */
+        .button-container {
+            position: absolute;
+            border: 5px solid white; /* Border thickness and color */
+            top: 10px;
+            width: 100%; /* Stretch across the border */
+            display: flex;
+            justify-content: center;
+            gap: 10px; /* Space between buttons */
+            z-index: 10;
+        }
+
+        /* Style for the button overlay 
         .button-container {
             position: absolute;
             top: 10px;
             left: 10px;
             z-index: 10;
-        }
+        }*/
 
         button {
             background-color: #007BFF;
@@ -27,6 +65,7 @@
             font-size: 16px;
             cursor: pointer;
             border-radius: 5px;
+            pointer-events: auto; /* Enable button clicks */
         }
 
         button:hover {
@@ -37,9 +76,13 @@
     <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>-->
 </head>
 <body>
-    <div class="button-container">
-        <button id="moveCameraToLevel1">Move to Level 1</button>
-        <button id="moveCameraToLevel2">Move to Level 2</button>
+    <div class = "window-container">
+        <div class="border-container">
+            <div class="button-container">
+                <button id="moveCameraToLevel1">Move to Level 1</button>
+                <button id="moveCameraToLevel2">Move to Level 2</button>
+            </div>
+        </div>
     </div>
     <script type="importmap">
         {
