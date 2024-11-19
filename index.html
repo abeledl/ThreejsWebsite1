@@ -10,9 +10,34 @@
             margin: 0;
             background: linear-gradient(0deg, #face8d 50%, aquamarine 100%);
         }
+
+        /* Style for the button overlay */
+        .button-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 10;
+        }
+
+        button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
+    <div class="button-container">
+        <button id="moveCameraButton">Move Camera</button>
+    </div>
     <script type="importmap">
         {
             "imports": {
@@ -112,7 +137,7 @@
 
         // Create a plane geometry for the glass
         const glassPlane = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), glassMaterial);
-        glassPlane.position.set(0, 4, 4); // Position it in the scene
+        glassPlane.position.set(1, 4, 3); // Position it in the scene
         //rotate the glass plane
         glassPlane.rotation.y = -Math.PI / 2;
 
@@ -138,7 +163,7 @@
         const textPlane = new THREE.Mesh(new THREE.PlaneGeometry(2, 1), textMaterial);
 
         // Position text slightly in front of the glass
-        textPlane.position.set(0, 4, 4);
+        textPlane.position.set(1, 4, 3);
         //rotation
         textPlane.rotation.y = -Math.PI / 2;
         //scene.add(textPlane);
@@ -196,11 +221,36 @@
             // Enable shadow casting and receiving for the GLTF model
             gltf.scene.traverse(function(node) {
                 if (node.isMesh) {
+                    // node.rotation.y = Math.sin(time) * 0.5;
+    
                     //node.castShadow = true;    // Objects will cast shadows
                     //node.receiveShadow = true; // Objects will receive shadows
                 }
             });
             scene.add(gltf.scene);
+            //position the model
+            gltf.scene.position.set(20, 0, 20);
+ 
+
+            // Set up rotation variables
+            let rotationSpeed = 0.005;
+            let time = 0;
+
+            // Animate rotation back and forth on the y-axis
+            function animat() {
+                requestAnimationFrame(animat);
+
+                time += rotationSpeed;
+                // Update rotation on y-axis using Math.sin for smooth back-and-forth motion
+                gltf.scene.rotation.y = Math.sin(time) * 0.5; // Adjust 0.5 for range of rotation
+
+                //renderer.render(scene, camera);
+            }
+
+            // Start animation loop
+            animat();
+
+
         }, undefined, function (error) {
             console.error(error);
         });
@@ -251,7 +301,7 @@
         let pointLight = new THREE.PointLight(0x0000ff, 1, 100);
         pointLight.position.set(2, 4, 0);
 
-        // Add grid
+       //  Add grid
         //const grid = new THREE.GridHelper(100, 100, 0x000000, 0x000000);
         //grid.receiveShadow = true; // Grid receives shadows
         //scene.add(grid);
@@ -312,12 +362,37 @@
         controls.enableZoom = true;  // Enable or disable zoom if needed
         controls.screenSpacePanning = false; // Prevent panning vertically
 
+        // Define target position and flag
+        const targetPosition = new THREE.Vector3(2, 10, 38);
+        const targetLookAt = new THREE.Vector3(20, 4, 20);
+        let isAnimating = false;
+        let animationProgress = 0;
+        const animationDuration = 60; // Number of frames for the animation
+
+        // Button event listener to start the animation
+        document.getElementById('moveCameraButton').addEventListener('click', () => {
+            isAnimating = true;
+            animationProgress = 0;
+        });
+
         // Animation loop: Call controls.update() within the render loop
         function animate() {
             requestAnimationFrame(animate);
 
+            if (isAnimating) {
+                animationProgress++;
+                const t = animationProgress / animationDuration;
 
-            
+                // Lerp camera position and target to create smooth movement
+                camera.position.lerpVectors(camera.position, targetPosition, t);
+                controls.target.lerpVectors(controls.target, targetLookAt, t);
+
+                // Stop the animation after reaching the target
+                if (animationProgress >= animationDuration) {
+                    isAnimating = false;
+                }
+            }
+
             controls.update(); // Update controls for damping effect
             renderer.render(scene, camera);
         }
