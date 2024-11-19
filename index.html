@@ -33,10 +33,13 @@
             background-color: #0056b3;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
+    <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>
 </head>
 <body>
     <div class="button-container">
-        <button id="moveCameraButton">Move Camera</button>
+        <button id="moveCameraToLevel1">Move to Level 1</button>
+        <button id="moveCameraToLevel2">Move to Level 2</button>
     </div>
     <script type="importmap">
         {
@@ -76,10 +79,9 @@
         // Scene setup
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(24, window.innerWidth / window.innerHeight, 0.1, 1000);
-        camera.position.z =20;
-        camera.position.y = 15;
-        camera.position.x = -20;
-        //camera.lookAt(0, 10, 0);
+        camera.position.set(-20, 15, 20);
+        const initialCameraPosition = camera.position.clone();
+        const initialLookAt = new THREE.Vector3(0, 4.5, 0);
 
         const renderer = new THREE.WebGLRenderer({antialias:true},{alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
@@ -309,7 +311,7 @@
 
         // Orbit controls
         const controls = new OrbitControls(camera, renderer.domElement);
-        controls.target.set(0, 4.5, 0);
+        controls.target.copy(initialLookAt);
 
 
         
@@ -363,43 +365,70 @@
         controls.screenSpacePanning = false; // Prevent panning vertically
 
         // Define target position and flag
-        const targetPosition = new THREE.Vector3(2, 10, 38);
-        const targetLookAt = new THREE.Vector3(20, 4, 20);
+        const level2Position = new THREE.Vector3(2, 10, 38);
+        const level2LookAt = new THREE.Vector3(20, 4, 20);
+        
         let isAnimating = false;
-        let animationProgress = 0;
+        let targetPosition, targetLookAt, animationProgress = 0;
         const animationDuration = 60; // Number of frames for the animation
 
-        // Button event listener to start the animation
-        document.getElementById('moveCameraButton').addEventListener('click', () => {
+        function animateCamera(targetPos, targetLook) {
             isAnimating = true;
-            animationProgress = 0;
+            targetPosition = targetPos.clone(); // Clone to ensure immutability
+            targetLookAt = targetLook.clone();
+            animationProgress = 0; // Reset progress for each new animation
+        }
+
+        // Event listeners for buttons
+        document.getElementById('moveCameraToLevel1').addEventListener('click', () => {
+            animateCamera(initialCameraPosition, initialLookAt);
         });
 
-        // Animation loop: Call controls.update() within the render loop
+        document.getElementById('moveCameraToLevel2').addEventListener('click', () => {
+            animateCamera(level2Position, level2LookAt);
+        });
+
+
+        // Load stats.js directly
+        const stats = new Stats()
+        stats.showPanel(1) // 0: fps, 1: ms, 2: mb, 3+: custom
+        document.body.appendChild(stats.dom)
+        
+        // Scale the stats panel
+        stats.dom.style.transform = 'scale(2)'; // Scale it 2x
+        stats.dom.style.transformOrigin = 'top left'; // Set the origin point for scaling
+        stats.dom.style.right = '10px'; // Move it 10px from the right edge
+        stats.dom.style.top = '100px'; // Move it 10px from the top edge
+        stats.dom.style.position = 'absolute';
+        stats.dom.style.zIndex = 9999; // Ensure it stays above other elements
+        // Animation loop: Adjust lerping logic for camera position and controls target
         function animate() {
             requestAnimationFrame(animate);
-
+            stats.begin();
             if (isAnimating) {
-                animationProgress++;
-                const t = animationProgress / animationDuration;
+                animationProgress += 1 / animationDuration;
+                const t = Math.min(animationProgress, 1); // Clamp t to 1
 
-                // Lerp camera position and target to create smooth movement
-                camera.position.lerpVectors(camera.position, targetPosition, t);
-                controls.target.lerpVectors(controls.target, targetLookAt, t);
+                // Interpolate the camera position and target
+                camera.position.lerp(targetPosition, t);
+                controls.target.lerp(targetLookAt, t);
 
                 // Stop the animation after reaching the target
-                if (animationProgress >= animationDuration) {
-                    isAnimating = false;
+                if (animationProgress >= 1) {
+                    isAnimating = false; // End animation when t reaches 1
                 }
             }
 
             controls.update(); // Update controls for damping effect
             renderer.render(scene, camera);
+
+            stats.end();
+
         }
 
         animate();
 
-                
+     
         
     </script>
 </body>
