@@ -59,11 +59,11 @@
         #summary {
 
             align-self: flex-end;
-            margin-right: auto; 
-            width: 100%;
-            margin-bottom: 10px;
+            
+            margin: 10px;
             padding: 10px;
-            left: 0px;
+            max-width: 1000px;
+            border-radius: 10px;
             border-top: 5px solid white;
             border-bottom: 5px solid white;
             color: rgb(0, 0, 0);
@@ -333,7 +333,7 @@
             new THREE.SphereGeometry(1, 1, 1),
             new THREE.MeshStandardMaterial({ color: 0x008000 })  
         );
-        sphere.position.set(2, 4, 0);
+        sphere.position.set(-4, 8, 0);
         sphere.castShadow = true;    // Sphere casts shadows
         sphere.receiveShadow = true; // Sphere receives shadows
         //scene.add(sphere);
@@ -452,6 +452,16 @@
             animateCamera(level2Position, level2LookAt);
         });
 
+        // Create a line from the sphere to the center of the scene
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0xff0000 }); // Line color: red
+        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+            sphere.position, // Start point: sphere's position
+            new THREE.Vector3(0, 0, 0) // End point: center of the scene
+        ]);
+        const line = new THREE.Line(lineGeometry, lineMaterial);
+
+        // Add the line to the scene
+        //scene.add(line);
         /*
         // Load stats.js directly
         const stats = new Stats()
@@ -483,6 +493,7 @@
                     isAnimating = false; // End animation when t reaches 1
                 }
             }
+            //line.geometry.setFromPoints([sphere.position, new THREE.Vector3(0, 0, 0)]);
 
             controls.update(); // Update controls for damping effect
             renderer.render(scene, camera);
