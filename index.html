@@ -90,7 +90,12 @@
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1); /* More pronounced shadow on hover */
             transform: translateY(-2px); /* Subtle lifting effect */
         }
-
+        #zoomButton {
+            align-self: flex-start;
+            margin-left: 0px;
+            margin-top: 80px;
+            z-index: 10;
+        }
 
     </style>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
@@ -108,8 +113,8 @@
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus dolore sapiente natus ipsa veritatis labore delectus obcaecati blanditiis alias omnis praesentium placeat beatae dolorem, voluptatem magni optio voluptatibus soluta recusandae.</p>
 
             </div>
+            <button id="zoomButton">Zoom In</button>
         </div>
-
     </div>
     <script type="importmap">
         {
@@ -152,7 +157,7 @@
         camera.position.set(-20, 15, 20);
         const initialCameraPosition = camera.position.clone();
         const initialLookAt = new THREE.Vector3(0, 3.5, 0);
-
+        const currentLookAt = initialLookAt.clone();
         const renderer = new THREE.WebGLRenderer({antialias:true},{alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
@@ -423,7 +428,7 @@
 
         // Step 2: Restrict camera movement
         //controls.minPolarAngle = Math.PI / 2; // Limit vertical movement to the horizontal plane
-        const maxAngleInDegrees = 70;
+        const maxAngleInDegrees = 80;
         const maxAngleInRadians = maxAngleInDegrees * (Math.PI / 180);
         controls.maxPolarAngle = maxAngleInRadians;
         // Step 3: Enable damping for smooth movement
@@ -441,6 +446,7 @@
         let isAnimating = false;
         let targetPosition, targetLookAt, animationProgress = 0;
         const animationDuration = 60; // Number of frames for the animation
+        let zoomedIn = false;
 
         function animateCamera(targetPos, targetLook) {
             isAnimating = true;
@@ -452,10 +458,14 @@
         // Event listeners for buttons
         document.getElementById('moveCameraToLevel1').addEventListener('click', () => {
             animateCamera(initialCameraPosition, initialLookAt);
+            currentLookAt.copy(initialLookAt);
+            zoomedIn = false;
         });
 
         document.getElementById('moveCameraToLevel2').addEventListener('click', () => {
             animateCamera(level2Position, level2LookAt);
+            currentLookAt.copy(level2LookAt);
+            zoomedIn = false;
         });
 
         // Create a line from the sphere to the center of the scene
@@ -482,6 +492,28 @@
         stats.dom.style.position = 'absolute';
         stats.dom.style.zIndex = 9999; // Ensure it stays above other elements
         */
+        // Button functionality
+        
+        const button = document.getElementById('zoomButton');
+        button.addEventListener('click', () => {
+            // Toggle zoom in and out
+            if (!zoomedIn){
+                const currentPosition = camera.position.clone();
+                const newPosition = new THREE.Vector3(
+                    currentPosition.x + 10,
+                    currentPosition.y-10,
+                    currentPosition.z + -10
+                );
+                const newLookAt = new THREE.Vector3(
+                    currentLookAt.x,
+                    currentLookAt.y+1,
+                    currentLookAt.z  
+                );
+                animateCamera(newPosition, newLookAt);
+                zoomedIn = true;
+            }
+           
+        });
         // Animation loop: Adjust lerping logic for camera position and controls target
         function animate() {
             requestAnimationFrame(animate);
