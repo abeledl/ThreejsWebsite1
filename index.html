@@ -90,13 +90,22 @@
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1); /* More pronounced shadow on hover */
             transform: translateY(-2px); /* Subtle lifting effect */
         }
-        #zoomButton {
-            align-self: flex-start;
-            margin-left: 0px;
-            margin-top: 80px;
+        #zoomInButton {
+            position: absolute;
+            top: 80px;
+            right: 20px; 
             z-index: 10;
+            width: 50px;
+            height: 45px;
         }
-
+        #zoomOutButton {
+            position: absolute;
+            top: 130px;
+            right: 20px; 
+            z-index: 10;
+            width: 50px;
+            height: 45px;
+        }
     </style>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
     <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>-->
@@ -113,7 +122,8 @@
                 <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus dolore sapiente natus ipsa veritatis labore delectus obcaecati blanditiis alias omnis praesentium placeat beatae dolorem, voluptatem magni optio voluptatibus soluta recusandae.</p>
 
             </div>
-            <button id="zoomButton">Zoom In</button>
+            <button id="zoomInButton">+</button>
+            <button id="zoomOutButton">-</button>
         </div>
     </div>
     <script type="importmap">
@@ -158,6 +168,7 @@
         const initialCameraPosition = camera.position.clone();
         const initialLookAt = new THREE.Vector3(0, 3.5, 0);
         const currentLookAt = initialLookAt.clone();
+        const currentPosition = camera.position.clone();
         const renderer = new THREE.WebGLRenderer({antialias:true},{alpha: true});
         renderer.setSize(window.innerWidth, window.innerHeight);
         renderer.shadowMap.enabled = true;
@@ -458,12 +469,14 @@
         // Event listeners for buttons
         document.getElementById('moveCameraToLevel1').addEventListener('click', () => {
             animateCamera(initialCameraPosition, initialLookAt);
+            currentPosition.copy(initialCameraPosition);
             currentLookAt.copy(initialLookAt);
             zoomedIn = false;
         });
 
         document.getElementById('moveCameraToLevel2').addEventListener('click', () => {
             animateCamera(level2Position, level2LookAt);
+            currentPosition.copy(level2Position);
             currentLookAt.copy(level2LookAt);
             zoomedIn = false;
         });
@@ -494,11 +507,12 @@
         */
         // Button functionality
         
-        const button = document.getElementById('zoomButton');
-        button.addEventListener('click', () => {
+        const buttonZoomIn = document.getElementById('zoomInButton');
+        buttonZoomIn.addEventListener('click', () => {
             // Toggle zoom in and out
-            if (!zoomedIn){
-                const currentPosition = camera.position.clone();
+            if (!zoomedIn)
+            {
+                //const currentPosition = camera.position.clone();
                 const newPosition = new THREE.Vector3(
                     currentPosition.x + 10,
                     currentPosition.y-10,
@@ -512,6 +526,14 @@
                 animateCamera(newPosition, newLookAt);
                 zoomedIn = true;
             }
+           
+        });
+                
+        const buttonZoomOut = document.getElementById('zoomOutButton');
+        buttonZoomOut.addEventListener('click', () => {
+
+            animateCamera(currentPosition, currentLookAt);
+            zoomedIn = false;
            
         });
         // Animation loop: Adjust lerping logic for camera position and controls target
