@@ -57,7 +57,7 @@
             z-index: 10;
         }*/
         #summary {
-
+            
             align-self: flex-end;
             transition: width 0.5s ease, height 0.5s ease, opacity 0.2s ease;
             margin: 10px;
@@ -68,6 +68,7 @@
             border: 5px solid white;
             color: rgb(0, 0, 0);
             font-family: Arial, sans-serif;
+            overflow: hidden;
             z-index: 10;
             background-color: #ffffffdb;
             pointer-events: auto; 
@@ -472,11 +473,44 @@
             currentPosition.copy(initialCameraPosition);
             currentLookAt.copy(initialLookAt);
             zoomedIn = false;
+
             const summaryDiv = document.getElementById("summary");
-            summaryDiv.innerHTML = `
-            <h1>Summary</h1>
-            <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus dolore sapiente natus ipsa veritatis labore delectus obcaecati blanditiis alias omnis praesentium placeat beatae dolorem, voluptatem magni optio voluptatibus soluta recusandae.</p>
+            const currentWidth = summaryDiv.offsetWidth - 27;
+            const currentHeight = summaryDiv.offsetHeight - 28;
+            console.log(currentHeight);
+            console.log(currentWidth);
+            // Temporarily update content to measure new width
+            const tempDiv = document.createElement("div");
+
+            tempDiv.style.position = "absolute";
+            tempDiv.style.width = "100%";
+            tempDiv.innerHTML = `
+                <h1>Summary</h1>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus dolore sapiente natus ipsa veritatis labore delectus obcaecati blanditiis alias omnis praesentium placeat beatae dolorem, voluptatem magni optio voluptatibus soluta recusandae.</p>
             `;
+            summaryDiv.appendChild(tempDiv);
+            const newWidth = tempDiv.offsetWidth+1;
+            const newHeight = tempDiv.scrollHeight;
+            summaryDiv.removeChild(tempDiv);
+
+            summaryDiv.style.width = `${currentWidth}px`;
+            summaryDiv.style.height = `${currentHeight}px`;
+
+            summaryDiv.innerHTML = `
+                <h1>Summary</h1>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Minus dolore sapiente natus ipsa veritatis labore delectus obcaecati blanditiis alias omnis praesentium placeat beatae dolorem, voluptatem magni optio voluptatibus soluta recusandae.</p>
+            `;
+            requestAnimationFrame(() => {
+                summaryDiv.style.width = `${newWidth}px`;
+                summaryDiv.style.height = `${newHeight}px`;
+            });
+
+            // Reset dimensions to auto after the animation completes
+            setTimeout(() => {
+                summaryDiv.style.width = 'auto';
+                summaryDiv.style.height = 'auto';
+            }, 500); // Match this with the width/height transition duration
+
         });
 
         document.getElementById('moveCameraToLevel2').addEventListener('click', () => {
@@ -484,19 +518,16 @@
             currentPosition.copy(level2Position);
             currentLookAt.copy(level2LookAt);
             zoomedIn = false;
+
             const summaryDiv = document.getElementById("summary");
-            const currentWidth = summaryDiv.offsetWidth;
-            const currentHeight = summaryDiv.offsetHeight;
+            const currentWidth = summaryDiv.offsetWidth - 27;
+            const currentHeight = summaryDiv.offsetHeight - 28;
+            console.log(currentHeight);
+            console.log(currentWidth);
             // Temporarily update content to measure new width
             const tempDiv = document.createElement("div");
-            summaryDiv.innerHTML = "";
+
             tempDiv.style.position = "absolute";
-            //tempDiv.style.position = "absolute";
-            //tempDiv.style.visibility = "hidden";
-            //empDiv.style.pointerEvents = "none";
-            //tempDiv.style.width = "auto";
-            //bg color blue
-            tempDiv.style.backgroundColor = "blue";
             tempDiv.innerHTML = `
                 <h1>Hello World</h1>
                 <p>This is the new content!</p>
@@ -504,33 +535,24 @@
             summaryDiv.appendChild(tempDiv);
             const newWidth = tempDiv.offsetWidth+1;
             const newHeight = tempDiv.scrollHeight;
+            summaryDiv.removeChild(tempDiv);
 
-
-            // Hide the original content immediately
-            //summaryDiv.classList.add('hidden');
-            // Set initial width and new width for animation
             summaryDiv.style.width = `${currentWidth}px`;
             summaryDiv.style.height = `${currentHeight}px`;
-            // Trigger the width and height animation
+
             summaryDiv.innerHTML = `
                 <h1>Hello World</h1>
                 <p>This is the new content!</p>
             `;
-            
             requestAnimationFrame(() => {
                 summaryDiv.style.width = `${newWidth}px`;
                 summaryDiv.style.height = `${newHeight}px`;
             });
-            // Update the content after the opacity transition
-            //document.body.removeChild(tempDiv);
-            
-
-            
 
             // Reset dimensions to auto after the animation completes
             setTimeout(() => {
-                //summaryDiv.style.width = 'auto';
-                //summaryDiv.style.height = 'auto';
+                summaryDiv.style.width = 'auto';
+                summaryDiv.style.height = 'auto';
             }, 500); // Match this with the width/height transition duration
 
         });
