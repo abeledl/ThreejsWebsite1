@@ -150,11 +150,32 @@
             width: 50px;
             height: 45px;
         }
+
+
+        #loadingDiv {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 10px;
+            background-color: #ccc;
+            box-sizing: border-box;
+        }
+        #loadingBar {
+            width: 0%;
+            height: 100%;
+            background-color: black;
+            box-sizing: border-box;
+        }
     </style>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
     <script src="http://mrdoob.github.io/stats.js/build/stats.min.js"></script>-->
 </head>
 <body>
+    <div id="loadingDiv">
+        <div id="loadingBar"></div>
+    </div>
     <div class = "window-container">
         <div class="border-container">
             <div id="button-border">
@@ -346,28 +367,13 @@
         */
 
 
-        // Create a loading bar in HTML
-        const loadingDiv = document.createElement('div');
-        loadingDiv.style.position = 'absolute';
-        loadingDiv.style.top = '50%';
-        loadingDiv.style.left = '50%';
-        loadingDiv.style.transform = 'translate(-50%, -50%)';
-        loadingDiv.style.width = '80%';
-        loadingDiv.style.height = '10px';
-        loadingDiv.style.backgroundColor = '#ccc';
-        loadingDiv.style.boxSizing = 'border-box';
-        document.body.appendChild(loadingDiv);
-
-        const loadingBar = document.createElement('div');
-        loadingBar.style.width = '0%';
-        loadingBar.style.height = '100%';
-        loadingBar.style.backgroundColor = '#4caf50';
-        loadingDiv.style.boxSizing = 'border-box';
-        loadingDiv.appendChild(loadingBar);
 
         // Variables to track progress
         let progress1 = 0;
         let progress2 = 0;
+
+        const loadingBar = document.getElementById('loadingBar');
+
 
         // Function to update the combined progress bar
         function updateLoadingBar() {
