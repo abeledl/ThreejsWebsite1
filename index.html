@@ -445,7 +445,7 @@
         let ambientLight = new THREE.AmbientLight(0xffffff, 0);
         scene.add(ambientLight);
         
-        let sun = new THREE.DirectionalLight(0xffffff,10);
+        let sun = new THREE.DirectionalLight(0xffffff,6);
         sun.position.set(20, 20, 10);  // Move sun light to a different position
         sun.target.position.set(0, 0, -10);
         sun.castShadow = true;  // Enable shadows for directional light
@@ -529,7 +529,7 @@
         controls.screenSpacePanning = false; // Prevent panning vertically
 
         // Define target position and flag
-        const level2Position = new THREE.Vector3(2, 10, 38);
+        const level2Position = new THREE.Vector3(2, 14, 38);
         const level2LookAt = new THREE.Vector3(19, 3, 20);
         
         let isAnimating = false;
