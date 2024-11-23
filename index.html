@@ -346,83 +346,123 @@
         */
 
 
+        // Create a loading bar in HTML
+        const loadingDiv = document.createElement('div');
+        loadingDiv.style.position = 'fixed';
+        loadingDiv.style.top = '50%';
+        loadingDiv.style.left = '50%';
+        loadingDiv.style.transform = 'translate(-50%, -50%)';
+        loadingDiv.style.width = '80%';
+        loadingDiv.style.height = '10px';
+        loadingDiv.style.backgroundColor = '#ccc';
+        document.body.appendChild(loadingDiv);
 
-        
-        // Load GLTF model
-        const loader = new GLTFLoader();
-        loader.load("lv1.glb", function (gltf) {
-            // Enable shadow casting and receiving for the GLTF model
-            gltf.scene.traverse(function(node) {
-                if (node.isMesh) {
-                    //node.castShadow = true;    // Objects will cast shadows
-                    //node.receiveShadow = true; // Objects will receive shadows
-                }
-            });
-            scene.add(gltf.scene);
-            gltf.scene.add(textPlane);
-            gltf.scene.add(glassPlane);
-            // Set up rotation variables
-            let rotationSpeed = 0.005;
-            let time = 0;
+        const loadingBar = document.createElement('div');
+        loadingBar.style.width = '0%';
+        loadingBar.style.height = '100%';
+        loadingBar.style.backgroundColor = '#4caf50';
+        loadingDiv.appendChild(loadingBar);
 
-            // Animate rotation back and forth on the y-axis
-            function animate() {
-                requestAnimationFrame(animate);
+        // Variables to track progress
+        let progress1 = 0;
+        let progress2 = 0;
 
-                time += rotationSpeed;
-                // Update rotation on y-axis using Math.sin for smooth back-and-forth motion
-                gltf.scene.rotation.y = Math.sin(time) * 0.5; // Adjust 0.5 for range of rotation
-
-                renderer.render(scene, camera);
+        // Function to update the combined progress bar
+        function updateLoadingBar() {
+            const combinedProgress = (progress1 + progress2) / 2;
+            loadingBar.style.width = combinedProgress + '%';
+            if (combinedProgress === 100) {
+                loadingDiv.style.display = 'none'; // Hide the loading bar when done
             }
+        }
 
-            // Start animation loop
-            animate();
+        // Load first GLTF model
+        const loader1 = new GLTFLoader();
+        loader1.load(
+            "lv1.glb",
+            function (gltf) {
+                // On successful load, add model to the scene
+                gltf.scene.traverse(function (node) {
+                    if (node.isMesh) {
+                        // Enable shadow casting and receiving
+                        // node.castShadow = true;
+                        // node.receiveShadow = true;
+                    }
+                });
 
-        }, undefined, function (error) {
-            console.error(error);
-        });
+                scene.add(gltf.scene);
 
-        loader.load("level2.glb", function (gltf) {
-            // Enable shadow casting and receiving for the GLTF model
-            gltf.scene.traverse(function(node) {
-                if (node.isMesh) {
-                    // node.rotation.y = Math.sin(time) * 0.5;
-    
-                    //node.castShadow = true;    // Objects will cast shadows
-                    //node.receiveShadow = true; // Objects will receive shadows
+                // Start animation for the first model
+                let rotationSpeed = 0.005;
+                let time = 0;
+
+                function animate1() {
+                    requestAnimationFrame(animate1);
+                    time += rotationSpeed;
+                    gltf.scene.rotation.y = Math.sin(time) * 0.5;
+                    renderer.render(scene, camera);
                 }
-            });
-            scene.add(gltf.scene);
-            //position the model
-            gltf.scene.position.set(20, 0, 20);
- 
+                animate1();
 
-            // Set up rotation variables
-            let rotationSpeed = 0.005;
-            let time = 0;
-
-            // Animate rotation back and forth on the y-axis
-            function animat() {
-                requestAnimationFrame(animat);
-
-                time += rotationSpeed;
-                // Update rotation on y-axis using Math.sin for smooth back-and-forth motion
-                gltf.scene.rotation.y = Math.sin(time) * 0.5; // Adjust 0.5 for range of rotation
-
-                //renderer.render(scene, camera);
+                // Mark progress as complete for this model
+                progress1 = 100;
+                updateLoadingBar();
+            },
+            function (xhr) {
+                // Update progress for the first model
+                progress1 = (xhr.loaded / xhr.total) * 100;
+                updateLoadingBar();
+            },
+            function (error) {
+                console.error('An error occurred with lv1.glb:', error);
             }
+        );
 
-            // Start animation loop
-            animat();
+        // Load second GLTF model
+        const loader2 = new GLTFLoader();
+        loader2.load(
+            "level2.glb",
+            function (gltf) {
+                // On successful load, add model to the scene
+                gltf.scene.traverse(function (node) {
+                    if (node.isMesh) {
+                        // Enable shadow casting and receiving
+                        // node.castShadow = true;
+                        // node.receiveShadow = true;
+                    }
+                });
 
+                scene.add(gltf.scene);
 
-        }, undefined, function (error) {
-            console.error(error);
-        });
-        
+                // Position the second model
+                gltf.scene.position.set(20, 0, 20);
 
-        
+                // Start animation for the second model
+                let rotationSpeed = 0.005;
+                let time = 0;
+
+                function animate2() {
+                    requestAnimationFrame(animate2);
+                    time += rotationSpeed;
+                    gltf.scene.rotation.y = Math.sin(time) * 0.5;
+                    renderer.render(scene, camera);
+                }
+                animate2();
+
+                // Mark progress as complete for this model
+                progress2 = 100;
+                updateLoadingBar();
+            },
+            function (xhr) {
+                // Update progress for the second model
+                progress2 = (xhr.loaded / xhr.total) * 100;
+                updateLoadingBar();
+            },
+            function (error) {
+                console.error('An error occurred with level2.glb:', error);
+            }
+        );
+
 
 
         renderer.physicallyCorrectLights = true;
@@ -445,7 +485,7 @@
         let ambientLight = new THREE.AmbientLight(0xffffff, 0);
         scene.add(ambientLight);
         
-        let sun = new THREE.DirectionalLight(0xffffff,6);
+        let sun = new THREE.DirectionalLight(0xffffff,7);
         sun.position.set(20, 20, 10);  // Move sun light to a different position
         sun.target.position.set(0, 0, -10);
         sun.castShadow = true;  // Enable shadows for directional light
