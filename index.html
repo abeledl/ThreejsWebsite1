@@ -156,7 +156,7 @@
            position: absolute;
      
             width: 100px;
-            height: 10px;
+            height: 20px;
             background-color: #ccc;
             z-index: 10;
         }
@@ -379,7 +379,9 @@
         function updateLoadingBar() {
             const combinedProgress = (progress1 + progress2) / 2;
             loadingBar.style.width = combinedProgress + 'px';
- 
+            loadingBar.innerHTML = Math.round(combinedProgress) + '%';
+            loadingBar.style.display = 'block'; // Show the loading bar 
+            loadingBar.style.color = 'white';
             console.log(combinedProgress);
             if (combinedProgress === 101) {
                 loadingDiv.style.display = 'none'; // Hide the loading bar when done
