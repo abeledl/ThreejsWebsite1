@@ -348,19 +348,21 @@
 
         // Create a loading bar in HTML
         const loadingDiv = document.createElement('div');
-        loadingDiv.style.position = 'fixed';
+        loadingDiv.style.position = 'absolute';
         loadingDiv.style.top = '50%';
         loadingDiv.style.left = '50%';
         loadingDiv.style.transform = 'translate(-50%, -50%)';
         loadingDiv.style.width = '80%';
         loadingDiv.style.height = '10px';
         loadingDiv.style.backgroundColor = '#ccc';
+        loadingDiv.style.boxSizing = 'border-box';
         document.body.appendChild(loadingDiv);
 
         const loadingBar = document.createElement('div');
         loadingBar.style.width = '0%';
         loadingBar.style.height = '100%';
         loadingBar.style.backgroundColor = '#4caf50';
+        loadingDiv.style.boxSizing = 'border-box';
         loadingDiv.appendChild(loadingBar);
 
         // Variables to track progress
