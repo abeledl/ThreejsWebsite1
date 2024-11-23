@@ -382,7 +382,7 @@
             loadingBar.innerHTML = Math.round(combinedProgress) + '%';
             loadingBar.style.display = 'block'; // Show the loading bar 
             loadingBar.style.color = 'white';
-            console.log(combinedProgress);
+            //console.log(combinedProgress);
             if (combinedProgress === 101) {
                 loadingDiv.style.display = 'none'; // Hide the loading bar when done
             }
@@ -417,11 +417,12 @@
                 animate1();
 
                 // Mark progress as complete for this model
-                progress1 = 100;
-                updateLoadingBar();
+                //progress1 = 100;
+                //updateLoadingBar();
             },
             function (xhr) {
                 // Update progress for the first model
+                //console.log(progress1);
                 progress1 = (xhr.loaded / xhr.total) * 100;
                 updateLoadingBar();
             },
@@ -462,12 +463,13 @@
                 animate2();
 
                 // Mark progress as complete for this model
-                progress2 = 100;
-                updateLoadingBar();
+                //progress2 = 100;
+                //updateLoadingBar();
             },
             function (xhr) {
                 // Update progress for the second model
                 progress2 = (xhr.loaded / xhr.total) * 100;
+                //console.log(progress2);
                 updateLoadingBar();
             },
             function (error) {
