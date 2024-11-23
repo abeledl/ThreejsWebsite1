@@ -373,6 +373,7 @@
         function updateLoadingBar() {
             const combinedProgress = (progress1 + progress2) / 2;
             loadingBar.style.width = combinedProgress + '%';
+            console.log(combinedProgress);
             if (combinedProgress === 100) {
                 loadingDiv.style.display = 'none'; // Hide the loading bar when done
             }
