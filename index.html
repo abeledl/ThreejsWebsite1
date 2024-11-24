@@ -154,18 +154,21 @@
 
         #loadingDiv {
            position: absolute;
-     
-            width: 100px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
             height: 20px;
             background-color: #ccc;
             z-index: 10;
+            border-radius: 10px;
         }
         #loadingBar {
             width: 0px;
             height: 100%;
             background-color: black;
             z-index: 11;
-
+            border-radius: 10px;
         }
     </style>
     <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/stats.js/r17/Stats.min.js"></script>
@@ -177,8 +180,6 @@
         <div class="border-container">
             <div id="loadingDiv">
                 <div id="loadingBar"></div>
-                <div id="loadingBar2"></div>
-                <div id="loadingBar3"></div>
             </div>
             <div id="button-border">
                 <div class="button-container">
@@ -368,117 +369,119 @@
         scene.add(glassPlane2);
         */
 
-// Create a loading manager to handle progress
-const loadingManager = new THREE.LoadingManager();
+        // Create a loading manager to handle progress
+        const loadingManager = new THREE.LoadingManager();
 
-// Variables to track individual progress
-let progress1 = 0;
-let progress2 = 0;
+        // Variables to track individual progress
+        let progress1 = 0;
+        let progress2 = 0;
 
-// Elements for progress display
-const loadingBar = document.getElementById('loadingBar');
-const loadingBar2 = document.getElementById('loadingBar2');
-const loadingBar3 = document.getElementById('loadingBar3');
-const loadingDiv = document.getElementById('loadingDiv'); // Assuming this exists
+        // Elements for progress display
+        const loadingBar = document.getElementById('loadingBar');
+        const loadingDiv = document.getElementById('loadingDiv'); // Assuming this exists
 
-// Update progress when each item is loaded
-loadingManager.onProgress = function (url, loaded, total) {
-    const combinedProgress = (loaded / total) * 100;
-    loadingBar.style.width = combinedProgress + '%';
-    loadingBar.innerHTML = Math.round(combinedProgress) + '%';
-    loadingBar.style.display = 'block'; // Show the loading bar
-    loadingBar.style.color = 'white';
-    console.log(`Combined progress: ${combinedProgress}%`);
+        loadingManager.onStart = function (url, itemsLoaded, itemsTotal) {
+            console.log(`Started loading file: ${url}. Loaded ${itemsLoaded} of ${itemsTotal} files.`);
+        };
+        // Update progress when each item is loaded
+        loadingManager.onProgress = function (url, loaded, total) {
+            console.log(`Loaded ${loaded} of ${total} files: ${url}`);
+            const combinedProgress = (loaded / total) * 100;
+            loadingBar.style.width = combinedProgress + '%';
+            //loadingBar.innerHTML = Math.round(combinedProgress) + '%';
+            loadingBar.style.display = 'block'; // Show the loading bar
+            loadingBar.style.color = 'white';
+            console.log(`Combined progress: ${combinedProgress}%`);
 
-    // Hide the loading bar when fully loaded
-    if (combinedProgress === 100) {
-        loadingDiv.style.display = 'none';
-    }
-};
-
-// Log completion
-loadingManager.onLoad = function () {
-    console.log("All models loaded");
-    loadingDiv.style.display = 'none'; // Ensure loading bar is hidden
-};
-
-// Log errors
-loadingManager.onError = function (url) {
-    console.error(`Error loading: ${url}`);
-};
-
-// Set up GLTFLoaders with the LoadingManager
-const loader1 = new GLTFLoader(loadingManager);
-const loader2 = new GLTFLoader(loadingManager);
-
-// Load the first GLTF model
-loader1.load(
-    "lv1.glb",
-    function (gltf) {
-        // On successful load, add model to the scene
-        gltf.scene.traverse(function (node) {
-            if (node.isMesh) {
-                // Enable shadow casting and receiving
-                // node.castShadow = true;
-                // node.receiveShadow = true;
+            // Hide the loading bar when fully loaded
+            if (combinedProgress === 100) {
+                loadingDiv.style.display = 'none';
             }
-        });
+        };
 
-        scene.add(gltf.scene);
+        // Log completion
+        loadingManager.onLoad = function () {
+            console.log("All models loaded");
+            loadingDiv.style.display = 'none'; // Ensure loading bar is hidden
+        };
 
-        // Start animation for the first model
-        let time = 0;
-        const rotationSpeed = 0.005;
+        // Log errors
+        loadingManager.onError = function (url) {
+            console.error(`Error loading: ${url}`);
+        };
 
-        function animate1() {
-            requestAnimationFrame(animate1);
-            time += rotationSpeed;
-            gltf.scene.rotation.y = Math.sin(time) * 0.5;
-            renderer.render(scene, camera);
-        }
-        animate1();
-    },
-    undefined, // No need for progress function
-    function (error) {
-        console.error("An error occurred with lv1.glb:", error);
-    }
-);
+        // Set up GLTFLoaders with the LoadingManager
+        const loader1 = new GLTFLoader(loadingManager);
+        const loader2 = new GLTFLoader(loadingManager);
 
-// Load the second GLTF model
-loader2.load(
-    "level2.glb",
-    function (gltf) {
-        // On successful load, add model to the scene
-        gltf.scene.traverse(function (node) {
-            if (node.isMesh) {
-                // Enable shadow casting and receiving
-                // node.castShadow = true;
-                // node.receiveShadow = true;
+        // Load the first GLTF model
+        loader1.load(
+            "lv1.glb",
+            function (gltf) {
+                // On successful load, add model to the scene
+                gltf.scene.traverse(function (node) {
+                    if (node.isMesh) {
+                        // Enable shadow casting and receiving
+                        // node.castShadow = true;
+                        // node.receiveShadow = true;
+                    }
+                });
+
+                scene.add(gltf.scene);
+
+                // Start animation for the first model
+                let time = 0;
+                const rotationSpeed = 0.005;
+
+                function animate1() {
+                    requestAnimationFrame(animate1);
+                    time += rotationSpeed;
+                    gltf.scene.rotation.y = Math.sin(time) * 0.5;
+                    renderer.render(scene, camera);
+                }
+                animate1();
+            },
+            undefined, // No need for progress function
+            function (error) {
+                console.error("An error occurred with lv1.glb:", error);
             }
-        });
+        );
 
-        scene.add(gltf.scene);
+        // Load the second GLTF model
+        loader2.load(
+            "level2.glb",
+            function (gltf) {
+                // On successful load, add model to the scene
+                gltf.scene.traverse(function (node) {
+                    if (node.isMesh) {
+                        // Enable shadow casting and receiving
+                        // node.castShadow = true;
+                        // node.receiveShadow = true;
+                    }
+                });
 
-        // Position the second model
-        gltf.scene.position.set(20, 0, 20);
+                scene.add(gltf.scene);
 
-        // Start animation for the second model
-        let time = 0;
-        const rotationSpeed = 0.005;
+                // Position the second model
+                gltf.scene.position.set(20, 0, 20);
 
-        function animate2() {
-            requestAnimationFrame(animate2);
-            time += rotationSpeed;
-            gltf.scene.rotation.y = Math.sin(time) * 0.5;
-            renderer.render(scene, camera);
-        }
-        animate2();
-    },
-    undefined, // No need for progress function
-    function (error) {
-        console.error("An error occurred with level2.glb:", error);
-    }
-);
+                // Start animation for the second model
+                let time = 0;
+                const rotationSpeed = 0.005;
+
+                function animate2() {
+                    requestAnimationFrame(animate2);
+                    time += rotationSpeed;
+                    gltf.scene.rotation.y = Math.sin(time) * 0.5;
+                    renderer.render(scene, camera);
+                }
+                animate2();
+            },
+            undefined, // No need for progress function
+            function (error) {
+                console.error("An error occurred with level2.glb:", error);
+            }
+        );
 
         renderer.physicallyCorrectLights = true;
 
