@@ -390,10 +390,12 @@
             console.log(`Loaded ${loaded} of ${total} files: ${url}`);
             const combinedProgress = (loaded / total) * 100;
             loadingBar.style.width = combinedProgress + '%';
-            //loadingBar.innerHTML = Math.round(combinedProgress) + '%';
-            loadingBar.innerHTML = "&#x200B;";
+            loadingBar.innerHTML = Math.round(combinedProgress) + '%';
+            //loadingBar.innerHTML = "&#x200B;";
             loadingBar.style.display = 'block'; // Show the loading bar
-            loadingBar.style.color = 'white';
+            //color opacity 0
+            loadingBar.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+            
             console.log(`Combined progress: ${combinedProgress}%`);
 
             // Hide the loading bar when fully loaded
