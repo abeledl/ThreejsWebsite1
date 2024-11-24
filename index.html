@@ -391,6 +391,7 @@
             const combinedProgress = (loaded / total) * 100;
             loadingBar.style.width = combinedProgress + '%';
             //loadingBar.innerHTML = Math.round(combinedProgress) + '%';
+            loadingBar.innerHTML = "";
             loadingBar.style.display = 'block'; // Show the loading bar
             loadingBar.style.color = 'white';
             console.log(`Combined progress: ${combinedProgress}%`);
