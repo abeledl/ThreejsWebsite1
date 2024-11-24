@@ -427,7 +427,7 @@
                 // Update progress for the first model
                 //console.log(progress1);
                 progress1 = (xhr.loaded / xhr.total) * 100;
-                loadingBar3.innerHTML = Math.round(progress1) + '%';
+                loadingBar3.innerHTML = xhr.loaded + ' / ' + xhr.total; 
                 loadingBar3.style.color = 'white';
                 updateLoadingBar();
             },
@@ -476,7 +476,7 @@
                 progress2 = (xhr.loaded / xhr.total) * 100;
 
                 //console.log(progress2);
-                loadingBar2.innerHTML = Math.round(progress2) + '%';
+                loadingBar2.innerHTML = xhr.loaded + ' / ' + xhr.total;
                 loadingBar2.style.color = 'white';
                 updateLoadingBar();
             },
