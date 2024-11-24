@@ -177,6 +177,8 @@
         <div class="border-container">
             <div id="loadingDiv">
                 <div id="loadingBar"></div>
+                <div id="loadingBar2"></div>
+                <div id="loadingBar3"></div>
             </div>
             <div id="button-border">
                 <div class="button-container">
@@ -373,7 +375,8 @@
         let progress2 = 0;
 
         const loadingBar = document.getElementById('loadingBar');
-
+        const loadingBar2 = document.getElementById('loadingBar2');
+        const loadingBar3 = document.getElementById('loadingBar3');
 
         // Function to update the combined progress bar
         function updateLoadingBar() {
@@ -382,7 +385,7 @@
             loadingBar.innerHTML = Math.round(combinedProgress) + '%';
             loadingBar.style.display = 'block'; // Show the loading bar 
             loadingBar.style.color = 'white';
-            //console.log(combinedProgress);
+            console.log(combinedProgress);
             if (combinedProgress === 101) {
                 loadingDiv.style.display = 'none'; // Hide the loading bar when done
             }
@@ -424,6 +427,8 @@
                 // Update progress for the first model
                 //console.log(progress1);
                 progress1 = (xhr.loaded / xhr.total) * 100;
+                loadingBar3.innerHTML = Math.round(progress1) + '%';
+                loadingBar3.style.color = 'white';
                 updateLoadingBar();
             },
             function (error) {
@@ -469,7 +474,10 @@
             function (xhr) {
                 // Update progress for the second model
                 progress2 = (xhr.loaded / xhr.total) * 100;
+
                 //console.log(progress2);
+                loadingBar2.innerHTML = Math.round(progress2) + '%';
+                loadingBar2.style.color = 'white';
                 updateLoadingBar();
             },
             function (error) {
